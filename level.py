@@ -5,6 +5,7 @@ from overlay import Overlay
 from sprites import Generic, Water, WildFlower, Tree
 from pytmx.util_pygame import load_pygame
 from support import *
+from debug import draw_hitboxes
 
 
 class Level:
@@ -12,6 +13,7 @@ class Level:
         self.display_surface = pygame.display.get_surface()
         self.all_sprites = CameraGroup()
         self.collision_sprites = pygame.sprite.Group()
+        self.tree_sprites = pygame.sprite.Group()
         self.setup()
         self.overlay = Overlay(self.player)
 
@@ -48,7 +50,7 @@ class Level:
 
         for obj in tmx_data.get_layer_by_name('Trees'):
             Tree((obj.x, obj.y), obj.image, [
-                 self.all_sprites, self.collision_sprites], obj.name)
+                 self.all_sprites, self.collision_sprites, self.tree_sprites], obj.name)
 
         Generic((0, 0),
                 pygame.image.load('graphics/world/ground.png').convert_alpha(),
@@ -62,8 +64,10 @@ class Level:
 
         for obj in tmx_data.get_layer_by_name('Player'):
             if obj.name == 'Start':
-                self.player = Player((obj.x, obj.y), self.all_sprites,
-                                     self.collision_sprites)
+                self.player = Player((obj.x, obj.y),
+                                     self.all_sprites,
+                                     self.collision_sprites,
+                                     self.tree_sprites)
 
     def run(self, dt):
         self.display_surface.fill("black")
@@ -89,3 +93,6 @@ class CameraGroup(pygame.sprite.Group):
                     offset_rect = sprite.rect.copy()
                     offset_rect.center -= self.offset
                     self.display_surface.blit(sprite.image, offset_rect)
+
+                    if sprite == player:
+                        draw_hitboxes(self, player, offset_rect)
