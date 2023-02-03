@@ -5,7 +5,7 @@ from timer import Timer
 
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, pos, group, collision_sprites, tree_sprites):
+    def __init__(self, pos, group, collision_sprites, tree_sprites, Interaction):
         super().__init__(group)
 
         self.import_assets()
@@ -44,6 +44,8 @@ class Player(pygame.sprite.Sprite):
         }
 
         self.tree_sprites = tree_sprites
+        self.interaction = Interaction
+        self.sleep = False
 
     def import_assets(self):
         self.animations = {'up': [], 'down': [], 'left': [], 'right': [],
@@ -82,7 +84,7 @@ class Player(pygame.sprite.Sprite):
     def input(self):
         keys = pygame.key.get_pressed()
 
-        if not self.timers['tool use'].active:
+        if not self.timers['tool use'].active and not self.sleep:
             if keys[pygame.K_UP] or keys[pygame.K_w]:
                 self.direction.y = -1
                 self.status = 'up'
@@ -130,6 +132,18 @@ class Player(pygame.sprite.Sprite):
             if keys[pygame.K_5]:
                 self.seed_index = 1
                 self.selected_seed = self.seeds[self.seed_index]
+
+            if keys[pygame.K_RETURN]:
+                collided_interaction_sprite = pygame.sprite.spritecollide(self,
+                                                                          self.interaction,
+                                                                          False)
+
+                if collided_interaction_sprite:
+                    if collided_interaction_sprite[0].name == 'Trader':
+                        pass
+                    elif collided_interaction_sprite[0].name == 'Bed':
+                        self.status = 'left_idle'
+                        self.sleep = True
 
             if keys[pygame.K_ESCAPE]:
                 pygame.quit()
