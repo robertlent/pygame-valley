@@ -49,8 +49,11 @@ class Level:
                        self.all_sprites, self.collision_sprites])
 
         for obj in tmx_data.get_layer_by_name('Trees'):
-            Tree((obj.x, obj.y), obj.image, [
-                 self.all_sprites, self.collision_sprites, self.tree_sprites], obj.name)
+            Tree((obj.x, obj.y),
+                 obj.image,
+                 [self.all_sprites, self.collision_sprites, self.tree_sprites],
+                 obj.name,
+                 add_inventory=self.add_inventory)
 
         Generic((0, 0),
                 pygame.image.load('graphics/world/ground.png').convert_alpha(),
@@ -68,6 +71,10 @@ class Level:
                                      self.all_sprites,
                                      self.collision_sprites,
                                      self.tree_sprites)
+
+    def add_inventory(self, item, count=1):
+        self.player.item_inventory[item] += count
+        print(self.player.item_inventory)
 
     def run(self, dt):
         self.display_surface.fill("black")
