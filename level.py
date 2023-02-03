@@ -94,5 +94,6 @@ class CameraGroup(pygame.sprite.Group):
                     offset_rect.center -= self.offset
                     self.display_surface.blit(sprite.image, offset_rect)
 
-                    if sprite == player:
-                        draw_hitboxes(self, player, offset_rect)
+                    # debug, turn on hitboxes
+                    # if sprite == player:
+                    #     draw_hitboxes(self, player, offset_rect)
