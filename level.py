@@ -8,19 +8,27 @@ from support import *
 from debug import draw_hitboxes
 from transition import Transition
 from soil import SoilLayer
+from sky import Rain
+from random import randint
 
 
 class Level:
     def __init__(self):
         self.display_surface = pygame.display.get_surface()
+
         self.all_sprites = CameraGroup()
         self.collision_sprites = pygame.sprite.Group()
         self.tree_sprites = pygame.sprite.Group()
         self.interaction_sprites = pygame.sprite.Group()
+
         self.soil_layer = SoilLayer(self.all_sprites)
         self.setup()
         self.overlay = Overlay(self.player)
         self.transition = Transition(self.reset, self.player)
+
+        self.rain = Rain(self.all_sprites)
+        self.raining = randint(0, 10) > 6
+        self.soil_layer.raining = self.raining
 
     def setup(self):
         tmx_data = load_pygame('graphics/map.tmx')
@@ -97,12 +105,20 @@ class Level:
             tree.create_fruit()
 
         self.soil_layer.remove_water()
+        self.soil_layer.raining = self.raining
+
+        if self.raining:
+            self.soil_layer.water_all()
 
     def run(self, dt):
         self.display_surface.fill("black")
         self.all_sprites.custom_draw(self.player)
         self.all_sprites.update(dt)
+
         self.overlay.display()
+
+        if self.raining:
+            self.rain.update()
 
         if self.player.sleep:
             self.transition.play()
