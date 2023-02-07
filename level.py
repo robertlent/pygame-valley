@@ -96,6 +96,8 @@ class Level:
 
             tree.create_fruit()
 
+        self.soil_layer.remove_water()
+
     def run(self, dt):
         self.display_surface.fill("black")
         self.all_sprites.custom_draw(self.player)

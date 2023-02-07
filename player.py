@@ -66,8 +66,8 @@ class Player(pygame.sprite.Sprite):
                     tree.damage()
         elif self.selected_tool == 'hoe':
             self.soil_layer.get_hit(self.target_pos)
-        else:
-            pass
+        elif self.selected_tool == 'water':
+            self.soil_layer.water(self.target_pos)
 
     def get_target_pos(self):
         self.target_pos = (self.rect.center +
