@@ -29,9 +29,11 @@ class Plant(pygame.sprite.Sprite):
         self.soil = soil
         self.is_watered = is_watered
         self.age = 0
-        self.max_age = len(self.frames) - 1
+        self.max_age = len(self.frames) - 2
         self.grow_speed = GROW_SPEED[plant_type]
         self.harvestable = False
+        self.days_harvestable = 0
+        self.plant_dead = False
         self.image = self.frames[self.age]
         self.y_offset = -16 if plant_type == 'corn' else -8
         self.rect = self.image.get_rect(
@@ -39,20 +41,26 @@ class Plant(pygame.sprite.Sprite):
         self.z = LAYERS['ground plant']
 
     def grow(self):
-        if self.is_watered(self.rect.center):
+        if self.is_watered(self.rect.center) and not self.plant_dead:
             self.age += self.grow_speed
 
             if int(self.age) > 0:
                 self.z = LAYERS['main']
-                self.hitbox = self.rect.copy().inflate(-26, -self.rect.height*0.4)
+                self.hitbox = self.rect.copy().inflate(-26, -self.rect.height * 0.4)
 
             if self.age >= self.max_age:
                 self.age = self.max_age
                 self.harvestable = True
+                self.days_harvestable += 1
 
-            self.image = self.frames[int(self.age)]
-            self.rect = self.image.get_rect(
-                midbottom=self.soil.rect.midbottom + pygame.math.Vector2(0, self.y_offset))
+        # if the plant has been harvestable for 2 full days, it dies.
+        if self.days_harvestable == 3:
+            self.age = self.max_age + 1
+            self.plant_dead = True
+
+        self.image = self.frames[int(self.age)]
+        self.rect = self.image.get_rect(
+            midbottom=self.soil.rect.midbottom + pygame.math.Vector2(0, self.y_offset))
 
 
 class SoilLayer:
