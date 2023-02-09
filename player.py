@@ -74,7 +74,7 @@ class Player(pygame.sprite.Sprite):
                            PLAYER_TOOL_OFFSET[self.status.split('_')[0]])
 
     def use_seed(self):
-        pass
+        self.soil_layer.plant_seed(self.target_pos, self.selected_seed)
 
     def animate(self, dt):
         self.frame_index += 4 * dt
