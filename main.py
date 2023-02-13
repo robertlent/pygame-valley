@@ -12,6 +12,9 @@ class Game:
         self.clock = pygame.time.Clock()
         self.level = Level()
 
+        self.background_music = pygame.mixer.Sound('audio/music.mp3')
+        self.background_music.set_volume(.04)
+
     def run(self):
         while True:
             for event in pygame.event.get():
@@ -21,6 +24,9 @@ class Game:
 
             dt = self.clock.tick() / 1000
             self.level.run(dt)
+
+            self.background_music.play(loops=-1)
+
             pygame.display.update()
 
 

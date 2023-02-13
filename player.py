@@ -56,6 +56,9 @@ class Player(pygame.sprite.Sprite):
         self.soil_layer = soil_layer
         self.toggle_shop = toggle_shop
 
+        self.watering = pygame.mixer.Sound('audio/water.mp3')
+        self.watering.set_volume(0.4)
+
     def import_assets(self):
         self.animations = {'up': [], 'down': [], 'left': [], 'right': [],
                            'right_idle': [], 'left_idle': [], 'up_idle': [], 'down_idle': [],
@@ -75,6 +78,8 @@ class Player(pygame.sprite.Sprite):
         elif self.selected_tool == 'hoe':
             self.soil_layer.get_hit(self.target_pos)
         elif self.selected_tool == 'water':
+            pygame.mixer.stop()
+            self.watering.play()
             self.soil_layer.water(self.target_pos)
 
     def get_target_pos(self):

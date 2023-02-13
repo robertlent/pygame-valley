@@ -75,7 +75,6 @@ class Tree(Generic):
         self.alive = True
         self.stump_surface = pygame.image.load(
             f'graphics/stumps/{"small" if name == "Small" else "large"}.png').convert_alpha()
-        self.iframe_timer = Timer(200)
 
         self.apple_surface = pygame.image.load('graphics/fruit/apple.png')
         self.apple_pos = APPLE_POS[name]
@@ -84,8 +83,14 @@ class Tree(Generic):
 
         self.add_inventory = add_inventory
 
+        self.axe_sound = pygame.mixer.Sound('audio/axe.mp3')
+        self.axe_sound.set_volume(0.5)
+
     def damage(self):
         self.health -= 1
+
+        pygame.mixer.stop()
+        self.axe_sound.play()
 
         if len(self.apple_sprites.sprites()) > 0:
             random_apple = choice(self.apple_sprites.sprites())
